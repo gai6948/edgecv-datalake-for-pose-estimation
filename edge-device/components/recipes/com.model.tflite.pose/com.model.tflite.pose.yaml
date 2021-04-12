@@ -1,0 +1,35 @@
+---
+RecipeFormatVersion: 2020-01-25
+ComponentName: com.model.tflite.pose
+ComponentVersion: <version>
+ComponentDescription: A demo Tflite pose estimation model for SageMaker Neo.
+ComponentPublisher: Amazon Web Services, Inc.
+ComponentConfiguration:
+  DefaultConfiguration:
+    artifactsBucket: <bucket_to_store_greengrass_artifacts>
+    modelPath: /greengrass/v2/models/pose-estimator/<version>/
+Manifests:
+  - Platform:
+      os: linux
+      architecture: aarch64
+    Lifecycle:
+      Install:
+        requiresprivilege: true
+        Script: |-
+          mkdir -p {configuration:/modelPath}
+          tar xf {artifacts:path}/pose-estimator-nano.tar.gz -C {configuration:/modelPath}
+          chown -R gaius {configuration:/modelPath}
+    Artifacts:
+      - URI: s3://{configuration:/artifactsBucket}/edge-cv-datalake-demo/artifacts/com.model.tflite.pose/<version>/pose-estimator-nano.tar.gz
+  - Platform:
+      os: linux
+      architecture: arm
+    Lifecycle:
+      Install:
+        requiresprivilege: true
+        Script: |-
+          mkdir -p {configuration:/modelPath}
+          tar xf {artifacts:path}/pose-estimator-pi.tar.gz -C {configuration:/modelPath}
+          chown -R pi {configuration:/modelPath}
+    Artifacts:
+      - URI: s3://{configuration:/artifactsBucket}/edge-cv-datalake-demo/artifacts/com.model.tflite.pose/<version>/pose-estimator-pi.tar.gz

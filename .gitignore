@@ -1,0 +1,4 @@
+inference-output
+src/edge/edge-mgr-test
+src/edge/mqttSendTest
+src/edge/detector

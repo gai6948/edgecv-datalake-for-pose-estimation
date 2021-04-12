@@ -1,0 +1,68 @@
+{
+  "targetArn": "arn:aws:iot:ap-northeast-1:949970762186:thing/Raspberry-Pi-Demo",
+  "components": {
+    "aws.edgecv.datalake.demo.poseEstimator": {
+      "componentVersion": "0.38.0",
+      "runWith": {
+        "posixUser": "pi"
+      },
+      "configurationUpdate": {
+        "merge": "{\"deviceName\": \"Raspberry-Pi-Demo\"}"
+      }
+    },
+    "com.model.tflite.pose": {
+      "componentVersion": "0.2.0"
+    },
+    "aws.greengrass.Nucleus": {
+      "componentVersion": "2.0.5"
+    },
+    "aws.greengrass.TokenExchangeService": {
+      "componentVersion": "2.0.3"
+    },
+    "aws.greengrass.Cli": {
+      "componentVersion": "2.0.3"
+    },
+    "aws.greengrass.StreamManager": {
+      "componentVersion": "2.0.7",
+      "configurationUpdate": {
+        "merge": "{\"STREAM_MANAGER_AUTHENTICATE_CLIENT\": false}"
+      }
+    }
+  },
+  "deploymentPolicies": {
+    "componentUpdatePolicy": {
+      "action": "NOTIFY_COMPONENTS",
+      "timeoutInSeconds": 30
+    },
+    "configurationValidationPolicy": {
+      "timeoutInSeconds": 60
+    },
+    "failureHandlingPolicy": "ROLLBACK"
+  },
+  "iotJobConfiguration": {
+    "abortConfig": {
+      "criteriaList": [
+        {
+          "action": "CANCEL",
+          "failureType": "ALL",
+          "minNumberOfExecutedThings": 100,
+          "thresholdPercentage": 5
+        }
+      ]
+    },
+    "jobExecutionsRolloutConfig": {
+      "exponentialRate": {
+        "baseRatePerMinute": 5,
+        "incrementFactor": 2,
+        "rateIncreaseCriteria": {
+          "numberOfNotifiedThings": 10,
+          "numberOfSucceededThings": 5
+        }
+      },
+      "maximumPerMinute": 50
+    },
+    "timeoutConfig": {
+      "inProgressTimeoutInMinutes": 5
+    }
+  }
+}

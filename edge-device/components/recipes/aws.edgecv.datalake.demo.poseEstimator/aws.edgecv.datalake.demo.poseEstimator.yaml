@@ -1,0 +1,78 @@
+---
+RecipeFormatVersion: 2020-01-25
+ComponentName: aws.edgecv.datalake.demo.poseEstimator
+ComponentVersion: <version>
+ComponentDescription: Demo component which detects human pose using TFLite model
+ComponentPublisher: Amazon Web Services, Inc.
+ComponentConfiguration:
+  DefaultConfiguration:
+    deviceName: Raspberry-Pi-Demo
+    outputBucketName: <s3_bucket_to_store_images>
+    accessControl:
+      aws.greengrass.ipc.mqttproxy:
+        aws.edgecv.datalake.demo.poseestimator:mqttproxy:1:
+          policyDescription: Allows access to publish to all AWS IoT Core topics.
+          operations:
+            - aws.greengrass#PublishToIoTCore
+          resources:
+            - '*'
+ComponentDependencies:
+  aws.greengrass.TokenExchangeService:
+    VersionRequirement: '>=0.0.0'
+    DependencyType: HARD
+  com.model.tflite.pose:
+    VersionRequirement: '^0'
+    DependencyType: HARD
+  aws.greengrass.StreamManager:
+    VersionRequirement: "^2.0.0"
+    DependencyType: "HARD"    
+Manifests:
+  - Platform:
+      os: linux
+      architecture: aarch64
+    Lifecycle:
+      setenv:
+        DEVICE_NAME: '{configuration:/deviceName}'
+        IOT_CRED_ENDPOINT: <your_iot_credentials_endpoint>
+        IOT_CERT_PATH: /home/gaius/iot-certs/device.pem.crt
+        IOT_KEY_PATH: /home/gaius/iot-certs/private.pem.key
+        IOT_CA_PATH: /home/gaius/iot-certs/AmazonRootCA1.pem
+        KVS_ROLE_ALIAS: GGv2JetsonNanoTokenExchangeRoleAlias        
+        POSE_MODEL_PATH: '{com.model.tflite.pose:configuration:/modelPath}'
+        STREAM_MANAGER_S3_BUCKET_NAME: '{configuration:/outputBucketName}'
+        POSE_ESTIMATOR_WORK_DIR: /greengrass/v2/work/aws.edgecv.datalake.demo.poseEstimator
+        TVM_TENSORRT_CACHE_DIR: /greengrass/v2/work/aws.edgecv.datalake.demo.poseEstimator
+        GST_PLUGIN_PATH: '/home/gaius/amazon-kinesis-video-streams-producer-sdk-cpp/build'
+        LD_LIBRARY_PATH: '/home/gaius/amazon-kinesis-video-streams-producer-sdk-cpp/open-source/local/lib'
+        INPUT_RESOLUTION: '1280x720'
+      run:
+        script: |-
+          sudo systemctl restart nvargus-daemon
+          cd {artifacts:decompressedPath}/poseEstimator-package
+          python3 -u index.py
+    Artifacts:
+      - URI: s3://gai-ggv2-deployment-bucket-ap-northeast-1/edge-cv-datalake-demo/artifacts/aws.edgecv.datalake.demo.poseEstimator/<version>/nano/poseEstimator-package.zip
+        Unarchive: ZIP
+  - Platform:
+      os: linux
+      architecture: arm
+    Lifecycle:
+      setenv:
+        DEVICE_NAME: '{configuration:/deviceName}'
+        IOT_CRED_ENDPOINT: <your_iot_credentials_endpoint>
+        IOT_CERT_PATH: /home/pi/iot-certs/device.pem.crt
+        IOT_KEY_PATH: /home/pi/iot-certs/private.pem.key
+        IOT_CA_PATH: /home/pi/iot-certs/AmazonRootCA1.pem
+        KVS_ROLE_ALIAS: GGv2RaspberryPiTokenExchangeRoleAlias
+        POSE_MODEL_PATH: '{com.model.tflite.pose:configuration:/modelPath}'
+        STREAM_MANAGER_S3_BUCKET_NAME: '{configuration:/outputBucketName}'
+        GST_PLUGIN_PATH: '/home/pi/amazon-kinesis-video-streams-producer-sdk-cpp/build'
+        LD_LIBRARY_PATH: '/home/pi/amazon-kinesis-video-streams-producer-sdk-cpp/open-source/local/lib'
+        INPUT_RESOLUTION: '1280x720'
+      run:
+        script: |-
+          cd {artifacts:decompressedPath}/poseEstimator-package
+          python3 -u index.py
+    Artifacts:
+      - URI: s3://gai-ggv2-deployment-bucket-ap-northeast-1/edge-cv-datalake-demo/artifacts/aws.edgecv.datalake.demo.poseEstimator/<version>/pi/poseEstimator-package.zip
+        Unarchive: ZIP
