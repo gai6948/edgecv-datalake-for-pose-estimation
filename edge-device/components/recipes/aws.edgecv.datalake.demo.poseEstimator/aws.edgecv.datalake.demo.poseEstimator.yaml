@@ -8,6 +8,7 @@ ComponentConfiguration:
   DefaultConfiguration:
     deviceName: Raspberry-Pi-Demo
     outputBucketName: <s3_bucket_to_store_images>
+    artifactsBucketName: <s3_bucket_to_store_greengrass_artifacts>
     accessControl:
       aws.greengrass.ipc.mqttproxy:
         aws.edgecv.datalake.demo.poseestimator:mqttproxy:1:
@@ -51,7 +52,7 @@ Manifests:
           cd {artifacts:decompressedPath}/poseEstimator-package
           python3 -u index.py
     Artifacts:
-      - URI: s3://gai-ggv2-deployment-bucket-ap-northeast-1/edge-cv-datalake-demo/artifacts/aws.edgecv.datalake.demo.poseEstimator/<version>/nano/poseEstimator-package.zip
+      - URI: s3://{configuration:/artifactsBucketName}/edge-cv-datalake-demo/artifacts/aws.edgecv.datalake.demo.poseEstimator/<version>/nano/poseEstimator-package.zip
         Unarchive: ZIP
   - Platform:
       os: linux
@@ -74,5 +75,5 @@ Manifests:
           cd {artifacts:decompressedPath}/poseEstimator-package
           python3 -u index.py
     Artifacts:
-      - URI: s3://gai-ggv2-deployment-bucket-ap-northeast-1/edge-cv-datalake-demo/artifacts/aws.edgecv.datalake.demo.poseEstimator/<version>/pi/poseEstimator-package.zip
+      - URI: s3://{configuration:/artifactsBucketName}/edge-cv-datalake-demo/artifacts/aws.edgecv.datalake.demo.poseEstimator/<version>/pi/poseEstimator-package.zip
         Unarchive: ZIP

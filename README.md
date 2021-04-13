@@ -31,6 +31,7 @@ Inference happens on the edge gateway running Greengrass V2. Results are then sy
 * [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-install.html)
 * [AWS CDK](https://docs.aws.amazon.com/cdk/latest/guide/getting_started.html)
 * Edge device with camera (Raspberry Pi running 32-bit Raspbian OS / Jetson Nano with JetPack 4.5.1 in this example)
+* (For embedded Quicksight Dashboard) An Amazon Quicksight account with <b>Enterprise Subscription</b>
 
 <a name="started"></a>
 ## Setup
