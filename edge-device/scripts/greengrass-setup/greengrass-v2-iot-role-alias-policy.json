@@ -4,7 +4,7 @@
     {
       "Effect": "Allow",
       "Action": "iot:AssumeRoleWithCertificate",
-      "Resource": "arn:aws:iot:ap-northeast-1:949970762186:rolealias/GGv2RaspberryPiTokenExchangeRoleAlias"
+      "Resource": "arn:aws:iot:ap-northeast-1:<your_aws_acct>:rolealias/GGv2RaspberryPiTokenExchangeRoleAlias"
     }
   ]
 }
