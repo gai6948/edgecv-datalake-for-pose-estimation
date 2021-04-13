@@ -1,5 +1,5 @@
 {
-  "targetArn": "arn:aws:iot:ap-northeast-1:949970762186:thing/Jetson-Nano-Demo",
+  "targetArn": "<your_iot_thing_arn>",
   "components": {
     "aws.edgecv.datalake.demo.poseEstimator": {
       "componentVersion": "0.38.0",
